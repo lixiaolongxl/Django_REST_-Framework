@@ -28,7 +28,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('booklist/<int:pk>', views.BookInfoViewS.as_view()),
-    # path('books1', views.BookListView.as_view()),
-    # path('books/<int:pk>', views.BookDetailView.as_view())
-    # path('books/<int:pk>', views.BookDetailView.as_view())
+    path('books1', views.BookListView.as_view()), # 一键是
+    # path('books/<int:pk>', views.BookDetailView.as_view())    #不使用rest_framework 形式
+    # path('books/<int:pk>', views.BookDetailView.as_view())    #不使用rest_framework 形式
 ]
