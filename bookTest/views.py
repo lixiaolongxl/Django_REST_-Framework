@@ -110,3 +110,24 @@ class BookInfoViewS(APIView):
         #     'msg': 'success',
         #     'data': bs.data
         # })
+
+    def post(self, request):
+        """反序列化演示"""
+        data = request.data
+        # books = Book.objects.all()
+        bs = BookInfoSerializers(data=data)
+        isv = bs.is_valid()
+        if isv:
+            res = bs.save()
+            return Response({'data': bs.validated_data, 'code': 200, 'msg': '创建成功'}, status.HTTP_200_OK)
+
+        return Response({'code': 200, 'msg': 'err'}, status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        data = request.data
+        books = Book.objects.get(pk=pk)
+        bs = BookInfoSerializers(instance=books, data=data)
+        if bs.is_valid():
+            res = bs.save()
+            return Response({'data': bs.validated_data, 'code': 200, 'msg': '修改成功'}, status.HTTP_204_NO_CONTENT)
+        return Response({'code': 200, 'msg': 'err'}, status.HTTP_400_BAD_REQUEST)

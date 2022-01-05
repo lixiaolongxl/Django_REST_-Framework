@@ -18,8 +18,12 @@ class BookInfoSerializers(serializers.Serializer):
     # createTime = serializers.DateTimeField(required=False, label="创建时间")
     # hello = serializers.CharField(label="临时变量",)
     def create(self, validated_data):
-
-        pass
+        return Book.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        pass
+        instance.name = validated_data.get('name', instance.name)
+        instance.desc = validated_data.get('desc', instance.desc)
+        instance.read = validated_data.get('read', instance.read)
+        instance.isSell = validated_data.get('isSell', instance.isSell)
+        instance.save()
+        return instance
