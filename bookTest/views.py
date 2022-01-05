@@ -129,5 +129,6 @@ class BookInfoViewS(APIView):
         bs = BookInfoSerializers(instance=books, data=data)
         if bs.is_valid():
             res = bs.save()
+            
             return Response({'data': bs.validated_data, 'code': 200, 'msg': '修改成功'}, status.HTTP_204_NO_CONTENT)
         return Response({'code': 200, 'msg': 'err'}, status.HTTP_400_BAD_REQUEST)
