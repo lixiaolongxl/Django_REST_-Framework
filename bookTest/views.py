@@ -1,11 +1,16 @@
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework import status
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from .models import Book
-
+from rest_framework import serializers, viewsets
 from django.http import QueryDict
+from .serializers import BookInfoSerializers
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 import json
 
 
@@ -83,3 +88,25 @@ class BookDetailView(View):
             'code': 200,
             'msg': '删除成功',
         })
+
+
+class BookInfoView(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoSerializers
+
+
+class BookInfoViewS(APIView):
+    def get(self, request):
+        books = Book.objects.all()
+        bs = BookInfoSerializers(instance=books, many=True)  # 如果是查询集需要加many=True
+        # bs.data
+        # print(bs.data)
+        # books = Book.objects.get(pk=1)
+        # books.hello ='qqqq'
+        # bs = BookInfoSerializers(instance=books)
+        return Response({'data': bs.data, 'code': 200, 'msg': 'success'}, status.HTTP_200_OK)
+        # return JsonResponse({
+        #     'code': 200,
+        #     'msg': 'success',
+        #     'data': bs.data
+        # })
