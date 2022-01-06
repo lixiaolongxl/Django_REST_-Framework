@@ -47,6 +47,10 @@ urlpatterns = [
     # path('books/<int:pk>', views.BooKDetailGenericAPIView.as_view())
 
     # mixins + GenericAPIView + serializers.ModelSerializer
-    path('books', views.BooKInfoGenericAPIViewMixins.as_view()),
-    path('books/<int:pk>', views.BooKDetailGenericAPIViewMixins.as_view())
+    # path('books', views.BooKInfoGenericAPIViewMixins.as_view()),
+    # path('books/<int:pk>', views.BooKDetailGenericAPIViewMixins.as_view())
+
+    # viewsets.ViewSet + serializers.ModelSerializer
+    path('books', views.BoobInfoViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('books/<int:pk>', views.BoobInfoViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}))
 ]
