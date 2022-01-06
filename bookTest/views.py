@@ -13,7 +13,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView, CreateAPIView, 
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, \
     RetrieveModelMixin
 from rest_framework.renderers import JSONRenderer
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, GenericViewSet
 import json
 
 
@@ -285,3 +285,18 @@ class BoobInfoViewSet(ViewSet):
             return Response(status.HTTP_400_BAD_REQUEST)
         books.delete()
         return Response({'code': 200, 'msg': 'success'}, status.HTTP_204_NO_CONTENT)
+
+
+class BookInfoGenericViewSet(GenericViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+    def list(self, request):
+        qs = self.get_queryset()
+        bms = self.get_serializer(qs, many=True)
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def retrieve(self, request, pk):
+        book = self.get_object()
+        bms = self.get_serializer(book)
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
