@@ -1,12 +1,26 @@
 from rest_framework import routers, serializers, viewsets
+from rest_framework.exceptions import  APIException
 from .models import Book
 
 
-#
-# class BookInfoSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = Book
-#         fields = '__all__'
+# 自动生产模型中的字段 实现create update 代码实现了
+class BookInfoModelSerializers(serializers.ModelSerializer):
+    def validate(self, attrs):
+        """检验用的"""
+        if attrs['name']:
+           return  attrs
+        APIException('请输入书名')
+
+    class Meta:
+        model = Book
+        fields = '__all__'  # 全部
+        # fields=['name','desc'] #指定几个
+        # exclude =['createTime'] # 除了createTime 其他都映射
+        extra_kwargs: {
+            "read": {"min_value": 0,"required":True}
+        }
+        read_only_fields:['book_id']  #标记自读
+
 
 class BookInfoSerializers(serializers.Serializer):
     book_id = serializers.IntegerField(label='ID', read_only=True)
@@ -17,6 +31,10 @@ class BookInfoSerializers(serializers.Serializer):
 
     # createTime = serializers.DateTimeField(required=False, label="创建时间")
     # hello = serializers.CharField(label="临时变量",)
+    def validate(self, attrs):
+        """检验用的"""
+        pass
+
     def create(self, validated_data):
         return Book.objects.create(**validated_data)
 

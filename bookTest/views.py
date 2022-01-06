@@ -7,15 +7,15 @@ from django.views import View
 from .models import Book
 from rest_framework import serializers, viewsets
 from django.http import QueryDict
-from .serializers import BookInfoSerializers
+from .serializers import BookInfoSerializers, BookInfoModelSerializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView, ListAPIView, CreateAPIView, ListCreateAPIView, UpdateAPIView, \
+    DestroyAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, \
+    RetrieveModelMixin
 from rest_framework.renderers import JSONRenderer
 import json
-
-
-# def index(request):
-#     return HttpResponse("Hello, world. You're at the polls index.")
 
 
 class BookListView(View):
@@ -129,6 +129,126 @@ class BookInfoViewS(APIView):
         bs = BookInfoSerializers(instance=books, data=data)
         if bs.is_valid():
             res = bs.save()
-            
+
             return Response({'data': bs.validated_data, 'code': 200, 'msg': '修改成功'}, status.HTTP_204_NO_CONTENT)
         return Response({'code': 200, 'msg': 'err'}, status.HTTP_400_BAD_REQUEST)
+
+
+class BookInfoAPIView(APIView):
+
+    def get(self, request):
+        books = Book.objects.all()
+        bms = BookInfoModelSerializers(books, many=True);
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def post(self, request: object) -> object:
+        bs = BookInfoModelSerializers(data=request.data)
+        bs.is_valid(raise_exception=True)
+        res = bs.save()
+        return Response({'data': bs.validated_data, 'code': 200, 'msg': '创建成功'}, status.HTTP_200_OK)
+
+
+class BookDetailAPIView(APIView):
+
+    def get(self, request, pk):
+        try:
+            books = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return Response(status.HTTP_400_BAD_REQUEST)
+        bms = BookInfoModelSerializers(books);
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def delete(self, request, pk):
+        try:
+            books = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return Response(status.HTTP_400_BAD_REQUEST)
+        books.delete()
+        return Response({'code': 200, 'msg': 'success'}, status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, pk):
+        try:
+            books = Book.objects.get(pk=pk)
+        except Book.DoesNotExist:
+            return Response(status.HTTP_400_BAD_REQUEST)
+        bs = BookInfoModelSerializers(books, data=request.data)
+        bs.is_valid(raise_exception=True)
+        res = bs.save()
+        return Response({'data': bs.data, 'code': 200, 'msg': '修改成功'}, status.HTTP_204_NO_CONTENT)
+
+
+class BooKInfoGenericAPIView(GenericAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+    def get(self, request):
+        qs = self.get_queryset()
+        bms = self.get_serializer(qs, many=True)
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def post(self, request):
+        bs = self.get_serializer(data=request.data)
+        bs.is_valid(raise_exception=True)
+        bs.save()
+        return Response({'data': bs.data, 'code': 200, 'msg': '创建成功'})
+
+
+class BooKDetailGenericAPIView(GenericAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+    def get(self, request, pk):
+        book = self.get_object()
+        bms = self.get_serializer(book)
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def put(self, request, pk):
+        books = self.get_object()
+        bms = self.get_serializer(books, data=request.data)
+        bms.is_valid(raise_exception=True)
+        bms.save()
+        return Response({'data': bms.data, 'code': 200, 'msg': '更新成功'})
+
+    def delete(self, request, pk):
+        books = self.get_object()
+        books.delete()
+        return Response({'code': 200, 'msg': 'success'}, status.HTTP_204_NO_CONTENT)
+
+
+"""
+class BooKInfoGenericAPIViewMixins(CreateModelMixin, ListModelMixin, GenericAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+
+class BooKDetailGenericAPIViewMixins(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
+
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
+"""
+
+
+# class BooKInfoGenericAPIViewMixins(CreateAPIView, ListAPIView):
+class BooKInfoGenericAPIViewMixins(ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+
+# class BooKDetailGenericAPIViewMixins(UpdateAPIView, DestroyAPIView, RetrieveAPIView):
+class BooKDetailGenericAPIViewMixins(RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
