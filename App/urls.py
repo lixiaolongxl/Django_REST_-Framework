@@ -19,7 +19,7 @@ from rest_framework import routers, serializers, viewsets
 from bookTest import views
 from bookTest.models import Book
 
-# 只能结合视图集使用
+# 只能结合视图集使用  routers.SimpleRouter 没有跟路由请求  routers.DefaultRouter() 有跟路由请求
 router = routers.DefaultRouter()
 router.register(r'booksm', views.BookInfoView)
 router.register(r'lbooks', views.BookInfoGenericViewSet)

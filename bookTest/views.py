@@ -15,6 +15,7 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelM
 from rest_framework.renderers import JSONRenderer
 from rest_framework.viewsets import ViewSet, GenericViewSet, ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 import json
 
 
@@ -333,6 +334,8 @@ class BookInfoGenericViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixi
 class BookInfoGenericViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookInfoModelSerializers
+    # 单个增加权限
+    # permission_classes = (IsAuthenticatedOrReadOnly,)
 
     # 查询最后一本书 detail=False 表示列表视图
     @action(methods=['get'], detail=False)
