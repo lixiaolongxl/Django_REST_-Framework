@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers, serializers, viewsets
+from rest_framework.documentation import include_docs_urls
+
 from bookTest import views
 from bookTest.models import Book
 
@@ -26,7 +28,8 @@ router.register(r'lbooks', views.BookInfoGenericViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    # 自动生成api
+    path('docs/', include_docs_urls(title="接口测试平台API文档", description="这个是接口平台的文档")),
     # 最全的逻辑重写viewsets.ModelViewSet +  serializers.ModelSerializer
     path('', include(router.urls)),
 

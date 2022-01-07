@@ -1,5 +1,5 @@
 from rest_framework import routers, serializers, viewsets
-from rest_framework.exceptions import  APIException
+from rest_framework.exceptions import APIException
 from .models import Book
 
 
@@ -7,9 +7,14 @@ from .models import Book
 class BookInfoModelSerializers(serializers.ModelSerializer):
     def validate(self, attrs):
         """检验用的"""
-        if attrs['name']:
-           return  attrs
-        APIException('请输入书名')
+        if not attrs['name']:
+            # APIException('请输入书名')
+            raise serializers.ValidationError('书名不能为空')
+
+        if not attrs.get('desc'):
+            raise serializers.ValidationError('书名描述不能为空')
+
+        return attrs
 
     class Meta:
         model = Book
@@ -17,9 +22,9 @@ class BookInfoModelSerializers(serializers.ModelSerializer):
         # fields=['name','desc'] #指定几个
         # exclude =['createTime'] # 除了createTime 其他都映射
         extra_kwargs: {
-            "read": {"min_value": 0,"required":True}
+            "read": {"min_value": 0, "required": True}
         }
-        read_only_fields:['book_id']  #标记自读
+        read_only_fields: ['book_id']  # 标记自读
 
 
 class BookInfoSerializers(serializers.Serializer):

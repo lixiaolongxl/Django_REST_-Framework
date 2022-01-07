@@ -157,5 +157,11 @@ REST_FRAMEWORK = {
     },
 
     # 配置过滤
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+
+    # 异常捕获定义
+    'EXCEPTION_HANDLER': 'exceptions.exception_handler',
+
+    # 指定用于支持coreapi的Schema
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }

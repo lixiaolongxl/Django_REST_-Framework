@@ -337,6 +337,28 @@ class BookInfoGenericViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixi
 
 
 class BookInfoGenericViewSet(ModelViewSet):
+    """
+         list:
+         返回所有项目信息
+
+         create:
+         创建项目
+
+         retrieve:
+         获取某个项目的详细信息
+
+         update:
+         更新项目
+
+         destroy：
+         删除项目
+
+         latest:
+         查询最后一本书
+
+         read:
+         修改阅读量
+    """
     queryset = Book.objects.all()
     serializer_class = BookInfoModelSerializers
     # 单个增加权限
@@ -357,6 +379,10 @@ class BookInfoGenericViewSet(ModelViewSet):
     # 查询最后一本书 detail=False 表示列表视图
     @action(methods=['get'], detail=False)
     def latest(self, request):
+        # 主动抛出异常
+        # from django.db import DatabaseError
+        # raise DatabaseError()
+
         book = Book.objects.latest('book_id')
         serializer = self.get_serializer(book)
         return Response(serializer.data)
