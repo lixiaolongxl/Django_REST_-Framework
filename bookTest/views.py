@@ -13,7 +13,8 @@ from rest_framework.generics import GenericAPIView, ListAPIView, CreateAPIView, 
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, UpdateModelMixin, DestroyModelMixin, \
     RetrieveModelMixin
 from rest_framework.renderers import JSONRenderer
-from rest_framework.viewsets import ViewSet, GenericViewSet
+from rest_framework.viewsets import ViewSet, GenericViewSet, ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.decorators import action
 import json
 
 
@@ -287,6 +288,7 @@ class BoobInfoViewSet(ViewSet):
         return Response({'code': 200, 'msg': 'success'}, status.HTTP_204_NO_CONTENT)
 
 
+"""
 class BookInfoGenericViewSet(GenericViewSet):
     queryset = Book.objects.all()
     serializer_class = BookInfoModelSerializers
@@ -300,3 +302,50 @@ class BookInfoGenericViewSet(GenericViewSet):
         book = self.get_object()
         bms = self.get_serializer(book)
         return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def create(self, request):
+        bms = self.get_serializer(data=request.data)
+        bms.is_valid(raise_exception=True)
+        bms.save()
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def update(self, request, pk):
+        book = self.get_object()
+        bms = self.get_serializer(book, data=request.data)
+        bms.is_valid(raise_exception=True)
+        bms.save()
+        return Response({'data': bms.data, 'code': 200, 'msg': 'success'}, 200)
+
+    def destroy(self, request, pk):
+        book = self.get_object()
+        book.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
+"""
+
+"""
+class BookInfoGenericViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin,
+                             GenericViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+"""
+
+
+class BookInfoGenericViewSet(ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookInfoModelSerializers
+
+    # 查询最后一本书 detail=False 表示列表视图
+    @action(methods=['get'], detail=False)
+    def latest(self, request):
+        book = Book.objects.latest('book_id')
+        serializer = self.get_serializer(book)
+        return Response(serializer.data)
+
+    # 修改阅读量 detail=True 表示非列表视图
+    @action(methods=['put'], detail=True)
+    def read(self, request, pk):
+        book = self.get_object()
+        book.read = request.data.get('read')
+        book.save()
+        serializer = self.get_serializer(book)
+        return Response(serializer.data)

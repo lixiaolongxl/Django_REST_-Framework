@@ -19,9 +19,10 @@ from rest_framework import routers, serializers, viewsets
 from bookTest import views
 from bookTest.models import Book
 
+# 只能结合视图集使用
 router = routers.DefaultRouter()
 router.register(r'booksm', views.BookInfoView)
-# router.register(r'booklist', views.BookInfoViewS)
+router.register(r'lbooks', views.BookInfoGenericViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,10 +52,16 @@ urlpatterns = [
     # path('books/<int:pk>', views.BooKDetailGenericAPIViewMixins.as_view())
 
     # viewsets.ViewSet + serializers.ModelSerializer
-    # path('books', views.BoobInfoViewSet.as_view({'get': 'list', 'post': 'create'})),
-    # path('books/<int:pk>', views.BoobInfoViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}))
+    # path('lbooks', views.BoobInfoViewSet.as_view({'get': 'list', 'post': 'create'})),
+    # path('lbooks/<int:pk>', views.BoobInfoViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}))
 
     # GenericViewSet + [mixins]
-    path('books', views.BookInfoGenericViewSet.as_view({'get': 'list'})),
-    path('books/<int:pk>', views.BoobInfoViewSet.as_view({'get': 'retrieve'}))
+    # path('lbooks', views.BookInfoGenericViewSet.as_view({'get': 'list', 'post': 'create'})),
+    # path('lbooks/<int:pk>',
+    #      views.BookInfoGenericViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
+    # # 额外增加的行为单独定义路由如下获取 列表视图
+    # path('lbooks/latest', views.BookInfoGenericViewSet.as_view({'get': 'latest'})),
+    # # 额外增加的行为单独定义路由如下获非   列表视图
+    # # path('lbooks/<int:pk>/read', views.BookInfoGenericViewSet.as_view({'put': 'read'})),
+    # path('lbooks/read/<int:pk>', views.BookInfoGenericViewSet.as_view({'put': 'read'})),  # (这种也行)
 ]
