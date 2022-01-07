@@ -16,6 +16,8 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.viewsets import ViewSet, GenericViewSet, ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 import json
 
 
@@ -336,6 +338,15 @@ class BookInfoGenericViewSet(ModelViewSet):
     serializer_class = BookInfoModelSerializers
     # 单个增加权限
     # permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    # 添加查询
+    #filter_backends = (DjangoFilterBackend,) #单个执行过滤
+    filter_fields = ['name', 'book_id', 'isSell']
+
+    # #指定后端为排序
+    # filter_backends = [OrderingFilter]
+    # # 指定排序字段 http://localhost:8000/lbooks/?ordering=-createTime
+    # ordering_fields = ['book_id','createTime']
 
     # 查询最后一本书 detail=False 表示列表视图
     @action(methods=['get'], detail=False)
