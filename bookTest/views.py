@@ -2,6 +2,8 @@
 from rest_framework import status
 from django.http import HttpResponse, JsonResponse
 from django.views import View
+
+from Util.custom_page_size import CustomPageSize
 from .models import Book
 from rest_framework import serializers, viewsets
 from django.http import QueryDict
@@ -18,6 +20,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+
 import json
 
 
@@ -340,13 +343,16 @@ class BookInfoGenericViewSet(ModelViewSet):
     # permission_classes = (IsAuthenticatedOrReadOnly,)
 
     # 添加查询
-    #filter_backends = (DjangoFilterBackend,) #单个执行过滤
-    filter_fields = ['name', 'book_id', 'isSell']
+    # filter_backends = (DjangoFilterBackend,) #单个执行过滤
+    filter_fields = ['name', 'book_id', 'isSell', 'read']
 
     # #指定后端为排序
     # filter_backends = [OrderingFilter]
     # # 指定排序字段 http://localhost:8000/lbooks/?ordering=-createTime
-    # ordering_fields = ['book_id','createTime']
+    # ordering_fields = ['book_id', 'createTime']
+
+    # 分页 可以改变page_size的大小
+    pagination_class = CustomPageSize
 
     # 查询最后一本书 detail=False 表示列表视图
     @action(methods=['get'], detail=False)
