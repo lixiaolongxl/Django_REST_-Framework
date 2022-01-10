@@ -23,17 +23,19 @@ from bookTest.models import Book
 
 # 只能结合视图集使用  routers.SimpleRouter 没有跟路由请求  routers.DefaultRouter() 有跟路由请求
 router = routers.DefaultRouter()
-router.register(r'booksm', views.BookInfoView)
-router.register(r'lbooks', views.BookInfoGenericViewSet)
+# router.register(r'booksm', views.BookInfoView)
+router.register(r'books', views.BookInfoGenericViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # 自动生成api
-    path('docs/', include_docs_urls(title="接口测试平台API文档", description="这个是接口平台的文档")),
+
     # 最全的逻辑重写viewsets.ModelViewSet +  serializers.ModelSerializer
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # 自动生成api
+    path('docs/', include_docs_urls(title="接口测试平台API文档", description="这个是接口平台的文档")),
 
     # APIView + serializers.Serializer
     # path('bookss/<int:pk>', views.BookInfoViewS.as_view()),
