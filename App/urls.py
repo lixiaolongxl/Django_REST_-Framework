@@ -25,15 +25,14 @@ from bookTest.models import Book
 # 只能结合视图集使用  routers.SimpleRouter 没有跟路由请求  routers.DefaultRouter() 有跟路由请求
 router = routers.DefaultRouter()
 # router.register(r'booksm', views.BookInfoView)
-router.register(r'books', views.BookInfoGenericViewSet)
-router.register(r'users', u_views.UserViewSet)
+router.register(r'books', views.BookInfoGenericViewSet, basename='book')
+router.register(r'users', u_views.UserViewSet, basename='user')
+router.register(r'login', u_views.LoginViewSet, basename='login')
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 最全的逻辑重写viewsets.ModelViewSet +  serializers.ModelSerializer
     path('api/', include(router.urls)),
-
-    path('api/login/', u_views.LoginUserView.as_view()),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 

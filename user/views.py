@@ -8,11 +8,14 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 from rest_framework.views import APIView
 
 # Create your views here.
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ViewSet
+from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 
+from Util.auth import JwtAuthentication
 from Util.custom_page_size import CustomPageSize
+from common import common
 from user.models import UserModel
-from user.serializers import UserModelSerializers
+from user.serializers import UserModelSerializers, LoginSerializers
 from rest_framework.response import Response
 
 
@@ -20,7 +23,7 @@ class UserViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateMo
                   GenericViewSet):
     queryset = UserModel.objects.all()
     serializer_class = UserModelSerializers
-
+    # authentication_classes = [JwtAuthentication,]
     # 添加查询
     # filter_backends = (DjangoFilterBackend,) #单个执行过滤
     filter_fields = ['id', 'name', 'createTime']
@@ -30,6 +33,8 @@ class UserViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateMo
 
 
 class LoginUserView(APIView):
+
+
     def post(self, request):
         name = request.data.get('name')
         password = request.data.get('password')
@@ -49,11 +54,23 @@ class LoginUserView(APIView):
         # return res;
         # return res.set_cookie('token', randomstring, expires=datetime.now() + timedelta(14))
 
-    # def get(self, request):
-    #     users = UserModel.objects.all().values()
-    #
-    #     return JsonResponse(
-    #         {
-    #             'data': list(users)
-    #         }
-    #     )
+
+class LoginViewSet(GenericViewSet):
+    queryset = UserModel.objects.all()
+    serializer_class = LoginSerializers
+    authentication_classes = []
+    def create(self, request):
+        name = request.data.get('name')
+        password = request.data.get('password')
+        user_object = UserModel.objects.filter(name=name, password=password).first()
+
+        if not user_object:
+            return Response({'msg': '用户名或密码错误'})
+        user_object.username = name;
+        payload = jwt_payload_handler(user_object)
+        token = jwt_encode_handler(payload)
+        return Response({'msg': '登录成功', 'data': {
+            'token': token,
+            'name': user_object.username,
+            'id': user_object.id
+        }})

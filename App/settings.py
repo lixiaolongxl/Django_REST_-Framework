@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'middleware.index.MYmid',
+    # 'middleware.index.MYmid',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -166,4 +166,6 @@ REST_FRAMEWORK = {
 
     # 指定用于支持coreapi的Schema
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
+    'DEFAULT_AUTHENTICATION_CLASSES': ['Util.auth.JwtAuthentication', ]
 }
