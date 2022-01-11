@@ -11,7 +11,7 @@ class JwtAuthentication(BaseJSONWebTokenAuthentication):
         try:
             payload = jwt_decode_handler(token)
         except jwt.ExpiredSignature:
-            raise common.ValidationErrorFailed('过期了')
+            raise common.ValidationErrorFailed('token过期了')
         except jwt.DecodeError:
             raise AuthenticationFailed({
                 'code': 204,
