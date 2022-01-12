@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'corsheaders',
     'rest_framework',
     'django_filters',
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     # 'middleware.index.MYmid',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -178,3 +180,45 @@ JWT_AUTH = {
     # 刷新过期时间
     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=7),
 }
+
+# 跨域允许的请求方式，可以使用默认值，默认的请求方式为:
+# from corsheaders.defaults import default_methods
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+
+# 允许跨域的请求头，可以使用默认值，默认的请求头为:
+# from corsheaders.defaults import default_headers
+# CORS_ALLOW_HEADERS = default_headers
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Pragma',
+    'session',
+    'token',
+    'Authorization'
+)
+
+# 跨域请求时，是否运行携带cookie，默认为False
+CORS_ALLOW_CREDENTIALS = True
+# 允许所有主机执行跨站点请求，默认为False
+# 如果没设置该参数，则必须设置白名单，运行部分白名单的主机才能执行跨站点请求
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS 设置跨域域名
+CORS_ORIGIN_WHITELIST =(
+    'http://0.0.0.0:8000',
+)

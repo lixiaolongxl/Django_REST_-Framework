@@ -19,6 +19,6 @@ class JwtAuthentication(BaseJSONWebTokenAuthentication):
             })
         except jwt.InvalidTokenError:
             raise common.ValidationErrorFailed('不合法的token')
-        person = payload;
+        person = payload
 
         return person, token
