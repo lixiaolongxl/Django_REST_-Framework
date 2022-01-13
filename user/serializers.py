@@ -1,7 +1,7 @@
 from rest_framework import routers, serializers, viewsets
 from rest_framework.mixins import CreateModelMixin
 
-from user.models import UserModel
+from user.models import UserModel, FileModel
 from common import common
 from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 
@@ -44,3 +44,9 @@ class LoginSerializers(serializers.ModelSerializer):
                 return user
         else:
             raise common.ValidationErrorFailed('账户密码错误')
+
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileModel
+        fields = '__all__'

@@ -28,6 +28,7 @@ router = routers.DefaultRouter()
 router.register(r'books', views.BookInfoGenericViewSet, basename='book')
 router.register(r'users', u_views.UserViewSet, basename='user')
 router.register(r'login', u_views.LoginViewSet, basename='login')
+router.register(r'upload', u_views.FileViewSet, basename='upload')
 urlpatterns = [
     path('admin/', admin.site.urls),
 

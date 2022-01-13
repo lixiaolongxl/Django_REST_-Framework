@@ -20,3 +20,14 @@ class UserModel(models.Model):
 
     def check_password(self, password):
         return (password, self.password)
+
+
+class FileModel(models.Model):
+    name = models.CharField(max_length=50)
+    # image = models.ImageField(upload_to="image")
+    file = models.FileField(upload_to='static/%Y/%m/%d/')
+
+    class Meta:
+        # 为这个类定义一个说明
+        verbose_name = "File"
+        db_table = "file"

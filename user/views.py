@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 
 from django.views import View
@@ -8,14 +9,15 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
 from rest_framework.views import APIView
 
 # Create your views here.
-from rest_framework.viewsets import GenericViewSet, ViewSet
+from rest_framework.viewsets import GenericViewSet, ViewSet, ModelViewSet
 from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 
+from App.settings import BASE_DIR
 from Util.auth import JwtAuthentication
 from Util.custom_page_size import CustomPageSize
 from common import common
-from user.models import UserModel
-from user.serializers import UserModelSerializers, LoginSerializers
+from user.models import UserModel, FileModel
+from user.serializers import UserModelSerializers, LoginSerializers, FileSerializer
 from rest_framework.response import Response
 
 
@@ -33,7 +35,6 @@ class UserViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateMo
 
 
 class LoginUserView(APIView):
-
 
     def post(self, request):
         name = request.data.get('name')
@@ -59,6 +60,7 @@ class LoginViewSet(GenericViewSet):
     queryset = UserModel.objects.all()
     serializer_class = LoginSerializers
     authentication_classes = []
+
     def create(self, request):
         name = request.data.get('name')
         password = request.data.get('password')
@@ -74,3 +76,19 @@ class LoginViewSet(GenericViewSet):
             'name': user_object.username,
             'id': user_object.id
         }})
+
+
+class FileViewSet(ModelViewSet):
+    queryset = FileModel.objects.all()
+    serializer_class = FileSerializer
+
+    def destroy(self, request, pk):
+        file = self.get_object()
+
+        fileURL = '%s/%s' % (BASE_DIR, file.file)
+        if os.path.exists(fileURL):
+            os.remove(fileURL)
+            file.delete();
+            return Response({'msg': '文件删除成功'})
+        else:
+            return Response({'msg': '文件不存在'})

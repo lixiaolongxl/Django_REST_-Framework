@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%llxtqldwb*otq$w*ci2@5jf5c@tv62*uhmki!1y1#%f*8s3_3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -174,7 +174,7 @@ REST_FRAMEWORK = {
     # 指定用于支持coreapi的Schema
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 
-    # 'DEFAULT_AUTHENTICATION_CLASSES': ['Util.auth.JwtAuthentication', ]
+    'DEFAULT_AUTHENTICATION_CLASSES': ['Util.auth.JwtAuthentication', ]
 }
 
 JWT_AUTH = {
