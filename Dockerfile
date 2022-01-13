@@ -1,7 +1,15 @@
 FROM python:3.9.6
+
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /home/DockerDemo
-ADD . /home/DockerDemo
-WORKDIR /home/DockerDemo
-RUN  pip3 install -r ./project/App/requirements.txt -i https://pypi.douban.com/simple
-RUN  pip3 install uwsgi
+COPY pip.conf /root/.pip/pip.conf
+
+RUN mkdir -p /home/DjangoApi/App
+
+WORKDIR /home/DjangoApi/App
+
+ADD . /home/DjangoApi/App
+
+RUN pip3 install --upgrade pip
+
+RUN pip3 install -r requirements.txt
+
