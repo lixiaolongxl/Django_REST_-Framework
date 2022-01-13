@@ -1,0 +1,15 @@
+version: '2'
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_03
+    command: uwsgi --ini ./project/App/uwsgi.ini --static-map /static=./project/App/static
+
+
+    volumes:
+      - .:/home/DockerDemo
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
