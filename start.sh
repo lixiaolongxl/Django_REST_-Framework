@@ -4,5 +4,5 @@
  # 2. 根据数据库迁移文件来修改数据库
  # 3. 用 uwsgi启动 django 服务, 不再使用python manage.py runserver
  # python manage.py makemigrations&&
- # python manage.py migrate&&
- uwsgi --ini /home/DjangoApi/App/uwsgi.ini --static-map /static=/home/DjangoApi/App/static
+python manage.py migrate&&
+uwsgi --ini uwsgi.ini --static-map /static=./static

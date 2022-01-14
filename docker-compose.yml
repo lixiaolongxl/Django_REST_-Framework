@@ -5,6 +5,33 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: django_server
+    networks:
+      - zion
     command: uwsgi --ini uwsgi.ini --static-map /static=./static
     ports:
       - "8000:8000"
+    restart: always
+    volumes:
+      - .:/home/DjangoApi/Apptest
+    depends_on:
+      - db
+  db:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - 'mysqldata:/var/lib/mysql'
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=152123'
+      - 'MYSQL_DATABASE=book'
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    networks:
+      - zion
+networks:
+  zion:
+volumes:
+  mysqldata:

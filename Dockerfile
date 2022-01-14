@@ -1,6 +1,7 @@
 FROM python:3.9.6
 
 ENV PYTHONUNBUFFERED 1
+
 COPY pip.conf /root/.pip/pip.conf
 
 RUN mkdir -p /home/DjangoApi/App
