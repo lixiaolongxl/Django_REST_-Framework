@@ -55,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 自定义中间件添加在最后
+    # 'middleware.logger.RequestLogMiddleware'
 ]
 
 ROOT_URLCONF = 'App.urls'
@@ -227,3 +230,59 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://0.0.0.0:8000',
 )
+
+
+# # 日志配置
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime}:{levelname}:{module}:{process:d}:{thread:d}:{message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{asctime}:{levelname}:{message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+            'formatter': 'simple'
+        },
+        'request_handler': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filters': ['require_debug_false'],
+            'filename': os.path.join(BASE_DIR, "log", "App.log"),
+            'maxBytes': 1024 * 1024 * 20,
+            'backupCount': 5,
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        # 测试
+        'dev': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        # 生产
+        'product': {
+            'handlers': ['request_handler'],
+            'level': 'WARNING',
+            'propagate': False
+        },
+    }
+}
